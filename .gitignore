@@ -1,3 +1,5 @@
+*.html
 .idea/*
 venv/*
 *.pyc
+http*

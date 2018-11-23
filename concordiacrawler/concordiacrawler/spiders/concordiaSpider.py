@@ -1,27 +1,32 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+from concordiacrawler.items import ConcordiacrawlerItem
 
 
 class concordiaSpider(scrapy.Spider):
-    name = "concordia_spider"
-    start_urls = ["https://www.concordia.ca/about.html"]
+    name = 'concordia_spider'
+    start_urls = ['https://www.concordia.ca/about.html']
 
     def parse(self, response):
-        print("Printing Response")
-        print(response)
-
         link_extractor = LinkExtractor()
         links = link_extractor.extract_links(response)
 
+        print('Amount of links')
+        print(len(links))
+
         for link in links:
-            print(link.url)
+            yield scrapy.Request(link.url, callback=self.parse_inner_page)
 
-            page = response.url.split("/")[-2]
+    def parse_inner_page(self, response):
+        item = ConcordiacrawlerItem()
+        item['body'] = response.body
 
-            filename = 'concordia-%s.html' % page
+        file_path = response.url.replace('/', '.') + '.html'
 
-            with open(filename, 'wb') as f:
-                f.write(response.body)
+        with open(file_path, 'wb') as f:
+            f.write(response.body)
 
-            self.log('Saved file %s' % filename)
+        self.log('Saved file %s' % file_path)
+
+        return item
