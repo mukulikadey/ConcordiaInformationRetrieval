@@ -15,7 +15,7 @@ class concordiaSpider(scrapy.Spider):
     start_urls = ["https://www.concordia.ca/about.html,"]
 
     rules = (
-        Rule(LinkExtractor(), callback='parse', follow=True),
+        Rule(LinkExtractor(), callback=self.parse, follow=True),
     )
 
     def parse(self, response):
