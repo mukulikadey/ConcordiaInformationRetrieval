@@ -1,5 +1,4 @@
 import os
-
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
@@ -24,7 +23,7 @@ class concordiaSpider(scrapy.Spider):
         item = ConcordiacrawlerItem()
         item['body'] = response.body
 
-        file_path = response.url.replace('/', 'z').replace(':', 'z')[5:240] + '.html'
+        file_path = response.url.replace('/', '').replace(':', '')[5:240]
 
         path_parts = ['FILES/', file_path, '.html']
         path = ''.join(path_parts)
