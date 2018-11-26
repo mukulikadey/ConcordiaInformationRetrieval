@@ -1,39 +1,62 @@
 import os
-import scrapy
+from scrapy.crawler import CrawlerProcess
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from concordiacrawler.items import ConcordiacrawlerItem
+
+class concordiaSpider(CrawlSpider):
+    name = "concordia_spider"
+    start_urls = ["https://www.concordia.ca/about.html"]
+
+    rules = (
+        Rule(LinkExtractor(), callback='parse_items', follow=True),
+    )
+
+    def parse_items(self, response):
+
+        results = {}
+        results['url'] = response.url
+
+        spans = []
+        headers = []
+        paragraphs = []
+        footers = []
+
+        # Retrieve the content
+        title = response.meta['link_text'].split()
+        for span in response.xpath('.//span/text()').re('\w+'):
+            spans.append(span.lower())
+
+        for h in response.xpath('//div').xpath('/html/body/*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]/text()').re('\w+'):
+            headers.append(h.lower())
+
+        for paragraph in response.xpath('//div').xpath('.//p/text()').re('\w+'):
+            paragraphs.append(paragraph.lower())
+
+        for footer in response.xpath('.//footer/text()').re('\w+'):
+            footers.append(footer.lower())
+
+        content = [title + spans + headers + paragraphs + footers]
+        results['content'] = content
+
+        yield results
 
 
-class concordiaSpider(scrapy.Spider):
-    name = 'concordia_spider'
-    start_urls = ['https://www.concordia.ca/about.html']
+def crawl_spider(max_count):
 
-    def parse(self, response):
-        link_extractor = LinkExtractor()
-        links = link_extractor.extract_links(response)
+    if os.path.exists('concordiaData.json'):
+        os.remove('concordiaData.json')
 
-        print('Amount of links')
-        print(len(links))
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+        'CLOSESPIDER_ITEMCOUNT': max_count,
+        'FEED_FORMAT': 'json',
+        'FEED_URI': 'concordiaData.json'
+    })
 
-        for link in links:
-            yield scrapy.Request(link.url, callback=self.parse_inner_page)
+    process.crawl(concordiaSpider)
+    process.start()
 
-    def parse_inner_page(self, response):
-        item = ConcordiacrawlerItem()
-        item['body'] = response.body
 
-        file_path = response.url.replace('/', '').replace(':', '')[5:240]
-
-        path_parts = ['FILES/', file_path, '.html']
-        path = ''.join(path_parts)
-
-        if not os.path.exists('FILES/'):
-            os.makedirs('FILES/')
-
-        with open(path, 'w') as f:
-            f.write(response.body)
-
-        self.log('Saved file %s' % file_path)
-
-        return item
+if __name__ == '__main__':
+    max_count = 30
+    crawl_spider(max_count)
