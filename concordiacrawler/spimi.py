@@ -1,6 +1,9 @@
 from collections import OrderedDict
 import os
 import json
+from afinn import Afinn
+
+afinn = Afinn()
 
 class SPIMI:
     def __init__(self, block_size_limit, documents):
@@ -32,6 +35,9 @@ class SPIMI:
 
             # Checks if the block has reached the max number of articles, set by block_size_max
             if index_number >= self.block_size_limit:
+                for term in dictionary.keys():
+                    dictionary['term']['sentiment'] = afinn.score(term)
+
                 sorted_dictionary = sort_terms(dictionary)
                 write_block_to_disk(sorted_dictionary, block_number)
 
@@ -39,15 +45,18 @@ class SPIMI:
                 index_number = 0
                 dictionary = {}
 
+        for term in dictionary.keys():
+            dictionary[term]['sentiment'] = afinn.score(term)
+
         sorted_dictionary = sort_terms(dictionary)
         write_block_to_disk(sorted_dictionary, block_number)
 
     def add_to_dictionary(self, dictionary, token):
-        dictionary[token] = {}
-        return dictionary[token]
+        dictionary[token] = {'postings': {}}
+        return dictionary[token]['postings']
 
     def get_postings_list(self, dictionary, token):
-        return dictionary[token]
+        return dictionary[token]['postings']
 
 
 def sort_terms(dictionary):

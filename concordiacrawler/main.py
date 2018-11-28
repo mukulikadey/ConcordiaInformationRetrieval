@@ -10,9 +10,15 @@ if __name__ == '__main__':
     data = dict()
     script_dir = os.path.dirname(__file__)
     file_path = os.path.join(script_dir, 'concordiacrawler\\spiders\\concordiaData.json')
-    with open(file_path, 'r') as fi:
-        inverted_index = dict()
-        data = json.load(fi)
+
+    try: 
+        with open(file_path, 'r') as fi:
+            inverted_index = dict()
+            data = json.load(fi)
+    except:
+        with open(file_path.replace('\\', '/'), 'r') as fi:
+            inverted_index = dict()
+            data = json.load(fi)
 
     print("=============== Normalize data =============== ")
     new_dict = dict()
