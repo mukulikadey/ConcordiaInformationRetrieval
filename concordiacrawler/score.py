@@ -57,7 +57,9 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
         for term in query_terms:
             query_parameters[term] = {}
             query_parameters[term]['dft'] = dfts[term]
-            query_parameters[term]['sentiment'] = index[term]['sentiment']
+
+            if index[term]['sentiment']:
+                query_parameters[term]['sentiment'] = index[term]['sentiment']
 
             if url in index[term]["postings"]:
                 query_parameters[term]['tftd'] = index[term]["postings"][url]
