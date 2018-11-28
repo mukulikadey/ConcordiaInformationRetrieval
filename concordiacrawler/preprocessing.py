@@ -1,29 +1,37 @@
-import nltk
-import string
+
 from nltk.corpus import stopwords
 
-def preprocess(documents):
-    # Tokenize each word in documents
-    for key in documents.keys():
-        tokens = nltk.word_tokenize((documents[key]))
-        processed_tokens = normalize(tokens)
-        documents[key] = processed_tokens
+def discard_non_alpha(tokens):
+    return [token for token in tokens if token.isalpha()]
+    
 
-    return documents
+def discard_non_alphanum(tokens):
+    return [token for token in tokens if token.isalnum()]
 
 
-def normalize(tokens):
+def lowercase_words(tokens):
+    return [token.lower() for token in tokens]
 
-    processed_tokens = tokens
-    # -- 1. Discard Tokens with punctuation marks
-    processed_tokens = [token for token in processed_tokens if not token in string.punctuation]
-    # -- 2. Discard blank tokens
-    processed_tokens = filter(None, processed_tokens)
-    processed_tokens = [token for token in processed_tokens if not token == "''" and not token == '``']
-    # -- 3. Discard tokens that are digits
-    processed_tokens = [token for token in processed_tokens if not token.isdigit()]
-    processed_tokens = [token for token in processed_tokens if token.isalpha()]
-    # -- 4. Apply lowercase to all tokens
-    processed_tokens = [token.lower() for token in processed_tokens]
 
-    return processed_tokens
+def discard_30_stop_words(tokens):
+    stops = list(set(stopwords.words('english')))
+    stops = stops[:30]
+    return [token for token in tokens if not token in stops]
+
+
+def discard_150_stop_words(tokens):
+    stops = list(set(stopwords.words('english')))
+    stops = stops[:150]
+    return [token for token in tokens if not token in stops]
+
+
+def discard_stop_words(tokens):
+    stops = list(set(stopwords.words('english')))
+    return [token for token in tokens if not token in stops]
+
+
+def all(tokens):
+    tokens = discard_non_alpha(tokens)
+    tokens = lowercase_words(tokens)
+    tokens = discard_stop_words(tokens)
+    return tokens

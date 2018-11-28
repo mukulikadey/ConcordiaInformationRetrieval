@@ -8,7 +8,7 @@ class concordiaSpider(CrawlSpider):
     start_urls = ["https://www.concordia.ca/about.html"]
 
     rules = (
-        Rule(LinkExtractor(), callback='parse_items', follow=True),
+        Rule(LinkExtractor(deny_domains=['twitter.com', 'facebook.com', 'linkedin.com', 'stm.info', 'google.com', 'w3.org']), callback='parse_items', follow=True),
     )
 
     def parse_items(self, response):
@@ -49,6 +49,7 @@ def crawl_spider(max_count):
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
         'CLOSESPIDER_ITEMCOUNT': max_count,
+        'CONCURRENT_REQUESTS': 1,
         'FEED_FORMAT': 'json',
         'FEED_URI': 'concordiaData.json'
     })

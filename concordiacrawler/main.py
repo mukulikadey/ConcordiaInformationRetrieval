@@ -1,12 +1,12 @@
 import json
 import os
 from spimi import SPIMI
-from preprocessing import normalize
+import preprocessing
 
 if __name__ == '__main__':
 
     block_size_limit = 500
-    print("=============== Retriving data =============== ")
+    print("=============== Retrieving data =============== ")
     data = dict()
     script_dir = os.path.dirname(__file__)
     file_path = os.path.join(script_dir, 'concordiacrawler\\spiders\\concordiaData.json')
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         new_dict[url] = content
 
     for key, value in new_dict.items():
-        new_dict[key] = normalize((value[0]))
+        new_dict[key] = preprocessing.all((value[0]))
 
     print(new_dict)
 
