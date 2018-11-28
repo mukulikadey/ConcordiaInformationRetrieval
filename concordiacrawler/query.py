@@ -1,8 +1,6 @@
-
 import preprocessing
 from read_spimi import generate_index_from_files
 import score
-
 import functools
 
 

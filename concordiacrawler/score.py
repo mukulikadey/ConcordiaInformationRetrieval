@@ -65,7 +65,7 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
                 query_parameters[term]['tftd'] = 0
 
         score = get_score(query_parameters)
-        total_squares += score
+        total_squares += score ** 2
 
         scores[url] = score
 
@@ -74,8 +74,9 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
     normalizing_quotient = math.sqrt(total_squares)
 
     for url in scores.keys():
-        scores[url] /= normalizing_quotient 
-        scores[url] *= 5
+        if scores[url] != 0:
+            scores[url] /= normalizing_quotient
+            scores[url] *= 5
 
     if query_sentiment >= 0:
         return sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
