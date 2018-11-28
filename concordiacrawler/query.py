@@ -45,7 +45,11 @@ def query_and(query):
             hits = []
 
         postings_lists_list.append(set(hits))
-        dfts[term] = len(hits.keys())
+        
+        try:
+            dfts[term] = len(hits.keys())
+        except:
+            dfts[term] = 0
 
     intersection_hits = list(functools.reduce(intersect, postings_lists_list))
     
@@ -75,7 +79,11 @@ def query_or(query):
             hits = []
 
         postings_lists_list.append(set(hits))
-        dfts[term] = len(hits.keys())
+        
+        try:
+            dfts[term] = len(hits.keys())
+        except:
+            dfts[term] = 0
 
     union_hits = list(functools.reduce(union, postings_lists_list))
 
