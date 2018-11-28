@@ -8,7 +8,7 @@ class concordiaSpider(CrawlSpider):
     start_urls = ["https://www.concordia.ca/about.html"]
 
     rules = (
-        Rule(LinkExtractor(deny_domains=['twitter.com', 'facebook.com', 'linkedin.com', 'stm.info', 'google.com', 'w3.org']), callback='parse_items', follow=True),
+        Rule(LinkExtractor(deny_domains=['twitter.com', 'facebook.com', 'linkedin.com', 'stm.info', 'google.com', 'w3.org', 'youtube.com']), callback='parse_items', follow=True),
     )
 
     def parse_items(self, response):

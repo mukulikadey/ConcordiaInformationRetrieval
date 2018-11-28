@@ -14,7 +14,7 @@ def query_single(query):
         normalized_query = preprocessing.all(sanitized_query)
 
         if normalized_query[0] in index:
-            hits = index[normalized_query[0]]
+            hits = index[normalized_query[0]]["postings"]
 
             dfts = {}
             dfts[normalized_query[0]] = len(hits)
@@ -42,7 +42,7 @@ def query_and(query):
 
     for term in normalized_query:
         if term in index:
-            hits = index[term]
+            hits = index[term]["postings"]
         else:
             hits = []
 
@@ -72,7 +72,7 @@ def query_or(query):
 
     for term in normalized_query:
         if term in index:
-            hits = index[term]
+            hits = index[term]["postings"]
         else:
             hits = []
 
@@ -86,19 +86,20 @@ def query_or(query):
     print('Number of hits: ', len(scores))
     print('Hits: ', scores)
 
-print('Select one of the options below:')
-print('Single query (1)')
-print('AND query (2)')
-print('OR query (3)')
+if __name__ == '__main__':
+    print('Select one of the options below:')
+    print('Single query (1)')
+    print('AND query (2)')
+    print('OR query (3)')
 
-option = input('Pick a number: ')
+    option = input('Pick a number: ')
 
-if option == '1':
-    query = input('Query: ')
-    query_single(query)
-elif option == '2':
-    query = input('Query: ')
-    query_and(query)
-elif option == '3':
-    query = input('Query: ')
-    query_or(query)
+    if option == '1':
+        query = input('Query: ')
+        query_single(query)
+    elif option == '2':
+        query = input('Query: ')
+        query_and(query)
+    elif option == '3':
+        query = input('Query: ')
+        query_or(query)
