@@ -37,7 +37,11 @@ def get_score(query_parameters):
         tftd = query_parameter['tftd']
         sentiment = query_parameter['sentiment']
 
-        idf = math.log(N / dft)
+        if dft != 0:
+            idf = math.log(N / dft)
+        else:
+            idf = 0
+            
         tf_idf = idf * tftd
 
         score += tf_idf * sentiment
