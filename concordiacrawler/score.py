@@ -63,13 +63,13 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
             query_parameters[term]['dft'] = dfts[term]
 
             try:
-                query_parameters[term]['sentiment'] = index[term]['sentiment']
+                query_parameters[term]['sentiment'] = index[term][0]['sentiment']
             except:
                 query_parameters[term]['sentiment'] = 0
 
             try:
-                if url in index[term]["postings"]:
-                    query_parameters[term]['tftd'] = index[term]["postings"][url]
+                if url in index[term][0]["postings"]:
+                    query_parameters[term]['tftd'] = index[term][0]["postings"][url]
                 else:
                     query_parameters[term]['tftd'] = 0
             except:
