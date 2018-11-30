@@ -36,7 +36,7 @@ class SPIMI:
             # Checks if the block has reached the max number of articles, set by block_size_max
             if index_number >= self.block_size_limit:
                 for term in dictionary.keys():
-                    dictionary['term']['sentiment'] = afinn.score(term)
+                    dictionary[term]['sentiment'] = afinn.score(term)
 
                 sorted_dictionary = sort_terms(dictionary)
                 write_block_to_disk(sorted_dictionary, block_number)
