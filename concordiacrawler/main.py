@@ -27,10 +27,11 @@ if __name__ == '__main__':
         content = entry["content"]
         new_dict[url] = content
 
+    # new dictionary now contains the urls as keys, and the content as their values
     for key, value in new_dict.items():
         new_dict[key] = preprocessing.all((value[0]))
 
-    print(new_dict)
+
 
     print("=============== Apply Spimi =============== ")
     spimi = SPIMI(block_size_limit, new_dict)

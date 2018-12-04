@@ -26,7 +26,7 @@ def get_num_docs():
     return num
 
 
-# This function computes the bm25 score for one document
+# This function computes the score for one document
 def get_score(query_parameters):
     N = get_num_docs()
 
@@ -49,7 +49,7 @@ def get_score(query_parameters):
     return score / len(query_parameters)
 
 
-# This function computes the bm25 scores for each document in the hits
+# This function computes the scores for each document in the hits
 def generate_scores_for_hits(query_terms, hits, dfts, index):
     scores = {}
 
@@ -82,6 +82,7 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
 
     query_sentiment = afinn.score(' '.join(query_terms))
 
+    # normalize score so that it is between -5 and 5
     normalizing_quotient = math.sqrt(total_squares)
 
     for url in scores.keys():
@@ -89,6 +90,8 @@ def generate_scores_for_hits(query_terms, hits, dfts, index):
             scores[url] /= normalizing_quotient
             scores[url] *= 5
 
+    # if the sentiment score is positive overall, then return score in decreasing order from most positive to least
+    # else if the sentiment score is negative overall, then return score in ascending order from most negative to least
     if query_sentiment >= 0:
         return sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
     else:

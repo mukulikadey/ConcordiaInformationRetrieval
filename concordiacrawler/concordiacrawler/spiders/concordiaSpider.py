@@ -7,6 +7,7 @@ class concordiaSpider(CrawlSpider):
     name = "concordia_spider"
     start_urls = ["https://www.concordia.ca/about.html"]
 
+    # Crawls all websites with exception of these domains
     rules = (
         Rule(LinkExtractor(deny_domains=['twitter.com', 'facebook.com', 'linkedin.com', 'stm.info', 'google.com', 'w3.org', 'youtube.com']), callback='parse_items', follow=True),
     )
@@ -60,5 +61,5 @@ def crawl_spider(max_count):
 
 
 if __name__ == '__main__':
-    max_count = 30
+    max_count = 100
     crawl_spider(max_count)
